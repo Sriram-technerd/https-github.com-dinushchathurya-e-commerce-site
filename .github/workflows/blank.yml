@@ -1,0 +1,28 @@
+name: Sync to Client Repository
+
+on:
+  push:
+    branches:
+      - main  # Triggers when you push to main branch
+
+jobs:
+  sync-to-client:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history
+      
+      - name: Configure Git
+        run: |
+          git config user.name "Sriram Technerd Bot"
+          git config user.email "bot@sriramtechnerd.com"
+      
+      - name: Push to client repository
+        env:
+          CLIENT_REPO_TOKEN: ${{ secrets.CLIENT_REPO_TOKEN }}
+        run: |
+          git remote add client https://x-access-token:${CLIENT_REPO_TOKEN}@github.com/sriramtechnerds-design/client-repo.git
+          git push client main --force
