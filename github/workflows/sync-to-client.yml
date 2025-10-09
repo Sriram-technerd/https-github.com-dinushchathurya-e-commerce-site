@@ -1,0 +1,25 @@
+name: Sync Main Branch to Client Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout your repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to Client Repo
+        env:
+          CLIENT_REPO_TOKEN: ${{ secrets.CLIENT_REPO_TOKEN }}
+        run: |
+          git config user.name "GitHub Action Bot"
+          git config user.email "action@github.com"
+          git remote add client https://x-access-token:${CLIENT_REPO_TOKEN}@github.com/client-username/client-repo.git
+          git push client main --force
