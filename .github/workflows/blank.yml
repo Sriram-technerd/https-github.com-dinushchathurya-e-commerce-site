@@ -1,4 +1,4 @@
-name: Sync main branch to client repo
+name: Mirror main branch to client repo
 
 on:
   push:
@@ -6,22 +6,22 @@ on:
       - main
 
 jobs:
-  sync:
+  mirror:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false  # <-- important! disables default GITHUB_TOKEN
+          persist-credentials: false   # disable default GITHUB_TOKEN
 
       - name: Configure Git
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "actions@github.com"
 
-      - name: Push to client repo
+      - name: Mirror push to client repo
         env:
           TOKEN: ${{ secrets.CLIENT_REPO_TOKEN }}
         run: |
           git remote add client https://${TOKEN}@github.com/sriramtechnerds-design/client-repo.git
-          git push client HEAD:main --force
+          git push --mirror client
