@@ -3,15 +3,16 @@ name: Sync main branch to client repo
 on:
   push:
     branches:
-      - main   # Trigger on main branch updates
+      - main
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false  # <-- important! disables default GITHUB_TOKEN
 
       - name: Configure Git
         run: |
@@ -22,8 +23,5 @@ jobs:
         env:
           TOKEN: ${{ secrets.CLIENT_REPO_TOKEN }}
         run: |
-          # Add client repo with token authentication
           git remote add client https://${TOKEN}@github.com/sriramtechnerds-design/client-repo.git
-
-          # Push main branch (force to mirror)
           git push client HEAD:main --force
